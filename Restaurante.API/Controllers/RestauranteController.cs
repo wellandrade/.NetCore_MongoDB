@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Restaurante.API.Controllers.Inputs;
 using Restaurante.API.Controllers.Outputs;
 using Restaurante.API.Data.Repositories;
 using Restaurante.API.Domain.Entities;
 using Restaurante.API.Domain.ValueObjects;
+using Restaurante.API.DTO;
 using Restaurante.API.Helpers;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,7 +26,7 @@ namespace Restaurante.API.Controllers
         }
 
         [HttpPost("restaurante")]
-        public ActionResult IncluirRestaurante([FromBody] RestauranteInclusao input)
+        public ActionResult<Retorno> IncluirRestaurante([FromBody] RestauranteInclusao input)
         {
             var cozinha = ECozinhaHelper.ConverterDeInteiro(input.Cozinha);
 
@@ -48,7 +52,7 @@ namespace Restaurante.API.Controllers
         }
 
         [HttpGet("restaurante/todos")]
-        public async Task<ActionResult> ObterRestaurantes()
+        public async Task<ActionResult<IList<RestauranteListagem>>> ObterRestaurantes()
         {
             var restaurantes = await _restauranteRepositorio.ObterTodos();
 
@@ -60,10 +64,7 @@ namespace Restaurante.API.Controllers
                 Cidade = r.Endereco.Cidade
             });
 
-            return Ok(new
-            {
-                data = listagem
-            });
+            return Ok(listagem);
         }
 
         [HttpGet("restaurante/{id}")]

@@ -21,6 +21,15 @@ namespace Restaurante.API
             services.AddSingleton<Data.MongoDB>();
             services.AddScoped<RestauranteRepository>();
 
+            services.AddCors(o => o.AddPolicy("HabilitarCors", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowAnyOrigin();
+            }));
+
+
             services.AddControllers().AddNewtonsoftJson();
         }
 
@@ -32,6 +41,8 @@ namespace Restaurante.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("HabilitarCors");
 
             app.UseRouting();
 
